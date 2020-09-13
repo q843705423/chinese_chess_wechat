@@ -1,10 +1,17 @@
 package io.github.q843705423.entity.piece.common;
 
-import io.github.q843705423.entity.piece.*;
+import io.github.q843705423.entity.piece.adviser.BlackAdviser;
+import io.github.q843705423.entity.piece.adviser.RedAdviser;
+import io.github.q843705423.entity.piece.car.BlackCar;
+import io.github.q843705423.entity.piece.car.RedCar;
+import io.github.q843705423.entity.piece.gun.BlackGun;
+import io.github.q843705423.entity.piece.gun.RedGun;
 import io.github.q843705423.entity.piece.house.BlackHouse;
 import io.github.q843705423.entity.piece.house.RedHouse;
 import io.github.q843705423.entity.piece.kind.BlackKind;
 import io.github.q843705423.entity.piece.kind.RedKind;
+import io.github.q843705423.entity.piece.minister.BlackMinister;
+import io.github.q843705423.entity.piece.minister.RedMinister;
 import io.github.q843705423.entity.piece.soldier.BlackSoldier;
 import io.github.q843705423.entity.piece.soldier.RedSoldier;
 

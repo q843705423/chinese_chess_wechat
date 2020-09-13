@@ -6,7 +6,7 @@ import io.github.q843705423.util.CanMove;
 
 import java.util.List;
 
-public abstract class Piece implements CanMove, Nameable, ColorAble {
+public abstract class Piece implements CanMove, Nameable, ColorAble, GoRead {
 
     /**
      * 子在自己的地盘
@@ -38,10 +38,12 @@ public abstract class Piece implements CanMove, Nameable, ColorAble {
         return PieceFactory.index2Bing.get(k).toString();
     }
 
-    public void inRangeWillAdd(List<Integer> list, int e, int[] now, int[] board, int who) {
+    public boolean inRangeWillAdd(List<Integer> list, int e, int[] now, int[] board, int who) {
         if (inRange(e) && notSameColor(e, now, board, who)) {
             list.add(e);
+            return true;
         }
+        return false;
 
     }
 

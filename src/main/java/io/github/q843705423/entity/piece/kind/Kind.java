@@ -1,11 +1,12 @@
 package io.github.q843705423.entity.piece.kind;
 
 import io.github.q843705423.entity.piece.common.Board;
+import io.github.q843705423.entity.piece.common.GoReadSoldier;
 import io.github.q843705423.entity.piece.common.Piece;
 
 import java.util.List;
 
-public abstract class Kind extends Piece {
+public abstract class Kind extends Piece implements GoReadSoldier {
 
     static int[] k = new int[90];
 
@@ -28,28 +29,59 @@ public abstract class Kind extends Piece {
         int boardPos = now[who];
         {
             int e = boardPos - 1;
-            hh(list, e, now, board, who);
+            check(list, e, now, board, who);
         }
         {
             int e = boardPos + 1;
-            hh(list, e, now, board, who);
+            check(list, e, now, board, who);
         }
 
         {
             int e = boardPos + Board.W;
-            hh(list, e, now, board, who);
+            check(list, e, now, board, who);
         }
         {
             int e = boardPos - Board.W;
-            hh(list, e, now, board, who);
+            check(list, e, now, board, who);
         }
+        {
+            //王将照面
+            if (opposite(boardPos, now, board, who)) {
+                int black = (!this.isRed() ? boardPos : now[5]);
+                int red = this.isRed() ? boardPos : now[21];
+                int e = isRed() ? black : red;
+                inRangeWillAdd(list, e, now, board, who);
+
+            }
+
+        }
+
 
     }
 
-    private void hh(List<Integer> list, int e, int[] now, int[] board, int who) {
+    private void check(List<Integer> list, int e, int[] now, int[] board, int who) {
         if (e >= 0 && e < 90 && k[e] == 1) {
             inRangeWillAdd(list, e, now, board, who);
         }
+    }
+
+    private boolean opposite(int e, int[] now, int[] board, int who) {
+        int black = (!this.isRed() ? e : now[5]);
+        int red = this.isRed() ? e : now[21];
+
+        int blackX = black % Board.W;
+        int redX = red % Board.W;
+        if (blackX != redX) {
+            return false;
+        }
+        for (int i = black + 9; i < red; i += 9) {
+            if (board[i] != -1) {
+                return false;
+            }
+        }
+        return true;
+
+
     }
 
 }

@@ -1,10 +1,11 @@
-package io.github.q843705423.entity.piece;
+package io.github.q843705423.entity.piece.adviser;
 
+import io.github.q843705423.entity.piece.adviser.Adviser;
 import io.github.q843705423.entity.piece.common.Piece;
 
 import java.util.List;
 
-public class RedAdviser extends Piece {
+public class RedAdviser extends Adviser {
     @Override
     public String englishName() {
         return "A";

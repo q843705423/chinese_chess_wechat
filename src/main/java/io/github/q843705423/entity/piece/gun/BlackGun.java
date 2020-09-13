@@ -1,18 +1,16 @@
-package io.github.q843705423.entity.piece;
-
-import io.github.q843705423.entity.piece.common.Piece;
+package io.github.q843705423.entity.piece.gun;
 
 import java.util.List;
 
-public class BlackCar extends Piece {
+public class BlackGun extends Gun {
     @Override
     public String englishName() {
-        return "r";
+        return "c";
     }
 
     @Override
     public String chinaName() {
-        return "車";
+        return "砲";
     }
 
     @Override

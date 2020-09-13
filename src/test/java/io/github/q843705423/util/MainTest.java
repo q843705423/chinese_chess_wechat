@@ -20,7 +20,7 @@ public class MainTest {
         int[] board = Main.initToBoard(init);
 
 
-        int[] dfs = Main.dfs(init, board, 0, 4, protocol.isRed(), protocol.isRed(), new int[30], new int[30], 0);
+        int[] dfs = Main.dfs(init, board, 0, 4, protocol.isRed(), protocol.isRed(), new int[30], new int[30],new String[30], 0);
         System.out.println("score:"+dfs[0]);
         System.out.println("which:"+dfs[1]);
         System.out.println("where:"+dfs[2]);

@@ -1,6 +1,5 @@
 package io.github.q843705423.entity.piece.soldier;
 
-import io.github.q843705423.entity.AbstractBing;
 import io.github.q843705423.entity.piece.common.Board;
 
 import java.util.List;

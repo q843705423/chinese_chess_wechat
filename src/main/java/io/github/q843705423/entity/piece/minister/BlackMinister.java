@@ -1,28 +1,25 @@
-package io.github.q843705423.entity.piece;
-
-import io.github.q843705423.entity.piece.common.Piece;
+package io.github.q843705423.entity.piece.minister;
 
 import java.util.List;
 
-public class RedCar extends Piece {
+public class BlackMinister extends Minister {
     @Override
     public String englishName() {
-        return "R";
+        return "b";
     }
 
     @Override
     public String chinaName() {
-        return "车";
+        return "象";
     }
 
     @Override
     public void moveList(int[] now, int[] board, boolean isRedTurn, int who, int y, int x, List<Integer> list) {
 
-
     }
 
     @Override
     public boolean isRed() {
-        return true;
+        return false;
     }
 }

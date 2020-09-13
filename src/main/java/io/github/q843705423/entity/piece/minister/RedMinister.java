@@ -1,28 +1,25 @@
-package io.github.q843705423.entity.piece;
-
-import io.github.q843705423.entity.piece.common.Piece;
+package io.github.q843705423.entity.piece.minister;
 
 import java.util.List;
 
-public class BlackAdviser extends Piece {
+public class RedMinister extends Minister {
     @Override
     public String englishName() {
-        return "a";
+        return "B";
     }
 
     @Override
     public String chinaName() {
-        return "士";
+        return "相";
     }
 
     @Override
     public void moveList(int[] now, int[] board, boolean isRedTurn, int who, int y, int x, List<Integer> list) {
-        //TODO
 
     }
 
     @Override
     public boolean isRed() {
-        return false;
+        return true;
     }
 }

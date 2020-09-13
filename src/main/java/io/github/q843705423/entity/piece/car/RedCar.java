@@ -1,19 +1,20 @@
-package io.github.q843705423.entity.piece.house;
+package io.github.q843705423.entity.piece.car;
 
-public class BlackHouse extends House {
+public class RedCar extends Car {
     @Override
     public String englishName() {
-        return "n";
+        return "R";
     }
 
     @Override
     public String chinaName() {
-        return "馬";
+        return "车";
     }
+
 
 
     @Override
     public boolean isRed() {
-        return false;
+        return true;
     }
 }

@@ -1,14 +1,16 @@
-package io.github.q843705423.entity.piece.house;
+package io.github.q843705423.entity.piece.car;
 
-public class BlackHouse extends House {
+import java.util.List;
+
+public class BlackCar extends Car {
     @Override
     public String englishName() {
-        return "n";
+        return "r";
     }
 
     @Override
     public String chinaName() {
-        return "馬";
+        return "車";
     }
 
 

@@ -1,11 +1,15 @@
 package io.github.q843705423.util;
 
+import io.github.q843705423.entity.piece.common.Board;
 import io.github.q843705423.entity.piece.common.Piece;
-import io.github.q843705423.entity.piece.common.ReplaceTable;
+import io.github.q843705423.entity.piece.common.ReplaceTableV2;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static io.github.q843705423.entity.piece.common.PieceFactory.index2Bing;
+
+//import io.github.q843705423.entity.piece.common.ReplaceTableV2;
 
 public class Main {
 
@@ -50,6 +54,21 @@ public class Main {
 
 
     /**
+     * dfs返回值到底是什么
+     * now表示当前局面，每个子对应棋盘上的位置
+     * board表示当前棋盘
+     * depth表示当前深度
+     * maxDepth表示最大深度
+     * isRedTurn 表示现在是谁的回合
+     * playerIsRed 表示最开始是谁 ？ 这个有用吗？
+     * whos表示每部棋是谁走的数组
+     * wheres 表示走到哪里数组
+     * whoLength 表示数组长度
+     * dfs返回的结果到底是什么?
+     * dfs[0]当前局面的最高得分
+     * dfs[1]当前局面的最好走子子力,第一步走的是啥
+     * dfs[2]当前局面的最好走子位置,第一步走到了哪
+     *
      * @param now       32
      * @param board     10*9
      * @param depth     当前深度
@@ -57,25 +76,30 @@ public class Main {
      * @param isRedTurn 是红方
      * @return [0->得分] [1->谁] [2->走到哪里]
      */
-    public static int[] dfs(int[] now, int[] board, int depth, int maxDepth, boolean isRedTurn, boolean playerIsRed, int[] whos, int[] wheres, int whoLength) {
+    public static int[] dfs(int[] now, int[] board, int depth, int maxDepth, boolean isRedTurn, boolean playerIsRed, int[] whos, int[] wheres, String[] chinese, int whoLength) {
+
+        if (now[5] == -1) {
+            return new int[]{50000, whos[0], wheres[0], depth};
+        }
+        if (now[21] == -1) {
+            return new int[]{-50000, whos[0], wheres[0], depth};
+        }
+
         if (depth == maxDepth) {
-/*
-            System.out.println("---------------------------------");
-            Main.showChinese(board);
-*/
-            int calculate = calculate(now, playerIsRed);
-//            System.out.println("now score is:" + calculate);
-//            System.out.println("---------------------------------");
-            return new int[]{calculate, whos[0], wheres[0]};
+            int calculate = calculate(now, isRedTurn);
+            int[] ints = {calculate, whos[0], wheres[0], depth};
+            ReplaceTableV2.putMap(now, ints[1], ints[2], ints[0], depth, isRedTurn, isRedTurn);
+            return ints;
         } else {
 //            int[] max = new int[]{-10000, -1, -1};
-            int[] maxOrMin = new int[]{(playerIsRed == isRedTurn ? -500_0000 : 500_0000), -1, -1};
+            int[] maxOrMin = new int[]{(isRedTurn ? -500_0000 : 500_0000), -1, -1, depth};
             List<int[]> maybeList = getMaybeList(now, board, isRedTurn);
             for (int j = 0; j < maybeList.size(); j++) {
                 int[] whoTowhere = maybeList.get(j);
                 int beginNowPos = whoTowhere[0];//某个子
                 int endBoardPos = whoTowhere[1];//移动到哪里去
 
+                chinese[whoLength] = zhao(beginNowPos, endBoardPos);
 
                 int endNowPos = 0;
                 try {
@@ -108,25 +132,46 @@ public class Main {
                 wheres[whoLength] = endBoardPos;
                 whoLength++;
 
+                int[] map = ReplaceTableV2.getMap(now, depth, isRedTurn);//先去找历史表
+
                 int[] dfs;
-                dfs = dfs(now, board, depth + 1, maxDepth, !isRedTurn, playerIsRed, whos, wheres, whoLength);
+                int z = 0;
+                if (map == null) {
+                    dfs = dfs(now, board, depth + 1, maxDepth, !isRedTurn, playerIsRed, whos, wheres, chinese, whoLength);
+                    z = 1;
+
+                } else {
+//                    dfs = map;
+//                    dfs[1] = whos[0];
+//                    dfs[2] = wheres[0];
+                    dfs = new int[]{map[0], whos[0], wheres[0], map[3] + 1};
+
+
+                }
+                tip(depth, chinese, dfs, new String[]{"车一进一", "車1进1", "车一平四", "将5进1"}, z);
+
                 if (dfs[1] != -1) {
-                    if (isRedTurn == playerIsRed) {
-                        if (maxOrMin[0] <= dfs[0]) {
+
+                    if (isRedTurn) {
+                        if ((maxOrMin[0] < dfs[0]) || (maxOrMin[0] == dfs[0] && maxOrMin[3] > dfs[3])) {
                             maxOrMin = dfs;
+//                            maxOrMin = new int[]{dfs[0],whos[0],wheres[0]};
                         }
                     } else {
-                        if (maxOrMin[0] >= dfs[0]) {
+                        if (maxOrMin[0] > dfs[0] || (maxOrMin[0] == dfs[0] && maxOrMin[3] > dfs[3])) {
                             maxOrMin = dfs;
+//                            maxOrMin = new int[]{dfs[0],whos[0],wheres[0]};
                         }
 
                     }
                 }
 
+                ReplaceTableV2.putMap(now, dfs[1], dfs[2], dfs[0], depth, isRedTurn, playerIsRed);
 
                 whoLength--;
                 wheres[whoLength] = -1;
                 whos[whoLength] = -1;
+                chinese[whoLength] = "";
 
                 if (endNowPos != -1) {
                     now[endNowPos] = temp_x;
@@ -140,13 +185,32 @@ public class Main {
 
             }
             return maxOrMin;
+//            return maxOrMin;
 
         }
 
 
     }
 
-    private static List<int[]> getMaybeList(int[] now, int[] board, boolean isRed) {
+    private static void tip(int depth, String[] chinese, int[] dfs, String[] k, int z) {
+        if (k.length == depth) {
+            boolean x = true;
+            for (int i = 0; i < k.length; i++) {
+                if (!chinese[i].equals(k[i])) {
+                    x = false;
+                    break;
+                }
+
+            }
+            if (x) {
+                System.out.println("===============================");
+                System.out.println(chinese[k.length] + ":" + dfs[0] + " " + (z == 1 ? "置换表" : ""));
+            }
+
+        }
+    }
+
+    public static List<int[]> getMaybeList(int[] now, int[] board, boolean isRed) {
         int begin = isRed ? 16 : 0;
         int end = isRed ? 32 : 16;
         List<int[]> moveOp = new ArrayList<>();
@@ -178,11 +242,11 @@ public class Main {
     /**
      * 计算双方得分
      *
-     * @param now 当前双方子力
-     * @param red 是否是红发
+     * @param now       当前双方子力
+     * @param isRedTurn 是否是红发
      * @return 得分
      */
-    public static int calculate(int[] now, boolean red) {
+    public static int calculate(int[] now, boolean isRedTurn) {
         int upSum = 0;
         for (int i = 0; i < 16; i++) {
             upSum += (now[i] == -1 ? 0 : 1) * scope[i];
@@ -191,7 +255,8 @@ public class Main {
         for (int i = 16; i < 32; i++) {
             downSum += (now[i] == -1 ? 0 : 1) * scope[i];
         }
-        return (red ? 1 : -1) * (downSum - upSum);
+//        return (isRedTurn ? 1 : -1) * (downSum - upSum);
+        return downSum - upSum;
     }
 
 
@@ -295,6 +360,48 @@ public class Main {
         }
     }
 
+    public static List<String> zhao(List<int[]> whoAndWhere) {
+        return whoAndWhere.stream().map(s -> zhao(s[0], s[1])).collect(Collectors.toList());
+
+    }
+
+
+    public static String zhao(int who, int where) {
+        Piece piece = index2Bing.get(who);
+        int origin = Board.now[who];
+        return piece.read(Board.now, Board.board, who, where);
+
+/*
+        int beginX = origin % Board.W;
+        int beginY = origin / Board.W;
+        int endX = where % Board.W;
+        int endY = where / Board.W;
+        String redPos = "0九八七六五四三二一";
+        String blackPos = "0123456789";
+
+        String changeRed = "0一二三四五六七八九";
+        String changeBlack = "0123456789";
+
+        String one = piece.chinaName();
+        char two = piece.isRed() ? redPos.charAt(beginX + 1) : blackPos.charAt(beginX + 1);
+        String three = "";
+        if (beginY == endY) {
+            three = "平";
+        } else {
+            three = (piece.isRed() && beginY > endY) || ((!piece.isRed()) && beginY < endY) ? "进" : "退";
+        }
+        char four;
+        if (three.equals("平")) {
+
+            four = piece.isRed() ? redPos.charAt(Math.abs(endX + 1)) : blackPos.charAt(Math.abs(endX + 1));
+        } else {
+
+            four = piece.isRed() ? changeRed.charAt(Math.abs(beginY - endY)) : changeBlack.charAt(Math.abs(beginY - endY));
+        }
+        return one + two + three + four;
+*/
+    }
+
     public static void showChinese(int[] board) {
         for (int i = 0; i < 10; i++) {
             for (int j = 0; j < 9; j++) {
@@ -312,4 +419,6 @@ public class Main {
         System.out.println("====================");
 
     }
+
+
 }

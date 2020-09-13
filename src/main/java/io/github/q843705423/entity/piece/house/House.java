@@ -1,11 +1,12 @@
 package io.github.q843705423.entity.piece.house;
 
 import io.github.q843705423.entity.piece.common.Board;
+import io.github.q843705423.entity.piece.common.GoReadHouse;
 import io.github.q843705423.entity.piece.common.Piece;
 
 import java.util.List;
 
-public abstract class House extends Piece {
+public abstract class House extends Piece implements GoReadHouse {
     static int[][] moving = {
             {1, -2},
             {1, 2},

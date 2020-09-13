@@ -1,18 +1,16 @@
-package io.github.q843705423.entity.piece;
-
-import io.github.q843705423.entity.piece.common.Piece;
+package io.github.q843705423.entity.piece.gun;
 
 import java.util.List;
 
-public class BlackMinister extends Piece {
+public class RedGun extends Gun {
     @Override
     public String englishName() {
-        return "b";
+        return "C";
     }
 
     @Override
     public String chinaName() {
-        return "象";
+        return "炮";
     }
 
     @Override
@@ -22,6 +20,6 @@ public class BlackMinister extends Piece {
 
     @Override
     public boolean isRed() {
-        return false;
+        return true;
     }
 }
