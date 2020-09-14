@@ -1,6 +1,5 @@
 package io.github.q843705423.entity.piece.common;
 
-import io.github.q843705423.entity.BaseInfo;
 import io.github.q843705423.interfaces.Nameable;
 import io.github.q843705423.util.CanMove;
 
@@ -8,12 +7,26 @@ import java.util.List;
 
 public abstract class Piece implements CanMove, Nameable, ColorAble, GoRead {
 
-    /**
-     * 子在自己的地盘
-     */
-    public boolean inMySelf(BaseInfo baseInfo) {
 
-        return (baseInfo.getY() <= 4 && baseInfo.isRed()) || (baseInfo.getY() > 5 && !baseInfo.isRed());
+    /**
+     * 判断子力是否已经过河
+     *
+     * @param now now
+     * @param pos pos
+     * @return 过河
+     */
+    public boolean goRiver(int[] now, int pos) {
+        int i = now[pos];
+        int y = i / Board.W;
+        if (y <= 4 && isRed()) {
+            return true;
+        }
+        if (y > 4 && !isRed()) {
+            return true;
+        }
+        return false;
+
+
     }
 
 
@@ -63,5 +76,9 @@ public abstract class Piece implements CanMove, Nameable, ColorAble, GoRead {
 
     public boolean isRed(int pos) {
         return pos > 15;
+    }
+
+    public int extraScore(int[] now, int[] board, int depth, int pos) {
+        return 0;
     }
 }

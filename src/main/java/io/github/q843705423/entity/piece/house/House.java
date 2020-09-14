@@ -75,4 +75,31 @@ public abstract class House extends Piece implements GoReadHouse {
         }
 
     }
+
+    public int moveListCount(int[] now, int[] board, int who, int y, int x) {
+        int count = 0;
+        int pos = now[who];
+        int[] legList = houseLeg[pos];
+        int[] moveList = houseMove[pos];
+        for (int i = 0; i < 8; i++) {
+            if (legList[i] == -1) {
+                continue;
+            }
+            if (board[legList[i]] == -1) {
+                int e = moveList[i];
+                if (inRange(e) && notSameColor(e, now, board, who)) {
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
+
+    @Override
+    public int extraScore(int[] now, int[] board, int depth, int pos) {
+        int y = pos / Board.W;
+        int x = pos % Board.W;
+        int count = moveListCount(now, board, pos, y, x);
+        return 5 * count;
+    }
 }

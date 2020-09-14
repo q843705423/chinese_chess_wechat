@@ -4,7 +4,7 @@ import io.github.q843705423.entity.piece.common.Board;
 
 import java.util.List;
 
-public class RedSoldier extends AbstractBing {
+public class RedSoldier extends AbstractSoldier {
 
 
     @Override

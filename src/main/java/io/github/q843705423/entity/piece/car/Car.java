@@ -44,4 +44,53 @@ public abstract class Car extends Piece implements GoReadSoldier {
         }
 
     }
+
+    public int moveListCount(int[] now, int[] board, int who, int y, int x) {
+        int count = 0;
+        for (int dy = y - 1; dy >= 0; dy--) {
+            int e = dy * Board.W + x;
+            boolean b = inRange(e) && notSameColor(e, now, board, who);
+            if (!b || board[e] != -1) {
+                break;
+            }
+            count++;
+        }
+        for (int dy = y + 1; dy < Board.H; dy++) {
+            int e = dy * Board.W + x;
+            boolean b = inRange(e) && notSameColor(e, now, board, who);
+            if (!b || board[e] != -1) {
+                break;
+            }
+            count++;
+        }
+        for (int dx = x + 1; dx < Board.W; dx++) {
+            int e = y * Board.W + dx;
+            boolean b = inRange(e) && notSameColor(e, now, board, who);
+            if (!b || board[e] != -1) {
+                break;
+            }
+            count++;
+
+        }
+
+        for (int dx = x - 1; dx >= 0; dx--) {
+            int e = y * Board.W + dx;
+            boolean b = inRange(e) && notSameColor(e, now, board, who);
+            if (!b || board[e] != -1) {
+                break;
+            }
+            count++;
+
+        }
+        return count;
+
+    }
+
+    @Override
+    public int extraScore(int[] now, int[] board, int depth, int pos) {
+        int boardPos = now[pos];
+        int y = boardPos / Board.W;
+        int x = boardPos % Board.W;
+        return 6 * moveListCount(now, board, pos, y, x);
+    }
 }

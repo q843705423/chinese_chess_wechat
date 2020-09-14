@@ -77,7 +77,11 @@ public class Board {
     public static String go() {
         long startTime = System.currentTimeMillis();
         boolean playerIsRed = protocol.isRed();
-        int[] dfs = Main.dfs(now, board, lines.size(), lines.size() + 6, playerIsRed, playerIsRed, new int[30], new int[30], new String[30], 0);
+        int myDepth = (int) (Math.log(5000_0000) / Math.log(Main.getMaybeList(now, board, playerIsRed).size()));
+        int hisDepth = (int) (Math.log(5000_0000) / Math.log(Main.getMaybeList(now, board, !playerIsRed).size()));
+        int depth = Math.min(Math.min(myDepth, hisDepth), 10);
+        System.out.printf("我方深度:%d对方深度%d,最终深度:%d\n", myDepth, hisDepth, depth);
+        int[] dfs = Main.dfs(now, board, lines.size(), lines.size() + depth, playerIsRed, playerIsRed, new int[30], new int[30], new String[30], 0);
         if (dfs[1] == -1 || (playerIsRed && dfs[0] == -50000) || (!playerIsRed && dfs[0] == 50000)) {
             System.out.println("nobestmove");
             return "nobestmove";

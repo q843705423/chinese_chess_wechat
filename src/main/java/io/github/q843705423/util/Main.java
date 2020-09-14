@@ -86,8 +86,8 @@ public class Main {
         }
 
         if (depth == maxDepth) {
-            int calculate = calculate(now, isRedTurn);
-            int[] ints = {calculate, whos[0], wheres[0], depth};
+            int score = calculate(now,  board, depth);
+            int[] ints = {score, whos[0], wheres[0], depth};
             ReplaceTableV2.putMap(now, ints[1], ints[2], ints[0], depth, isRedTurn, isRedTurn);
             return ints;
         } else {
@@ -148,7 +148,8 @@ public class Main {
 
 
                 }
-                tip(depth, chinese, dfs, new String[]{"车一进一", "車1进1", "车一平四", "将5进1"}, z);
+//                tip(depth, chinese, dfs, new String[]{"车三平五"}, z);
+
 
                 if (dfs[1] != -1) {
 
@@ -238,24 +239,30 @@ public class Main {
 
     }
 
+    private static Random random = new Random();
 
     /**
      * 计算双方得分
      *
      * @param now       当前双方子力
-     * @param isRedTurn 是否是红发
      * @return 得分
      */
-    public static int calculate(int[] now, boolean isRedTurn) {
+    public static int calculate(int[] now,  int[] board, int depth) {
         int upSum = 0;
         for (int i = 0; i < 16; i++) {
             upSum += (now[i] == -1 ? 0 : 1) * scope[i];
+            if (now[i] != -1) {
+                upSum += index2Bing.get(i).extraScore(now, board, depth, i);
+            }
+
         }
         int downSum = 0;
         for (int i = 16; i < 32; i++) {
             downSum += (now[i] == -1 ? 0 : 1) * scope[i];
+            if (now[i] != -1) {
+                downSum += index2Bing.get(i).extraScore(now, board, depth, i);
+            }
         }
-//        return (isRedTurn ? 1 : -1) * (downSum - upSum);
         return downSum - upSum;
     }
 

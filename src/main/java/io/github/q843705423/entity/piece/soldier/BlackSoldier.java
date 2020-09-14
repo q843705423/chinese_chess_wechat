@@ -4,7 +4,7 @@ import io.github.q843705423.entity.piece.common.Board;
 
 import java.util.List;
 
-public class BlackSoldier extends AbstractBing {
+public class BlackSoldier extends AbstractSoldier {
     @Override
     public String englishName() {
         return "p";
