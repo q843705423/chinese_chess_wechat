@@ -1,6 +1,7 @@
 package io.github.q843705423.entity.piece.common;
 
 import io.github.q843705423.entity.Protocol;
+import io.github.q843705423.entity.ScoreNode;
 import io.github.q843705423.util.Main;
 
 import java.util.ArrayList;
@@ -81,7 +82,8 @@ public class Board {
         int hisDepth = (int) (Math.log(5000_0000) / Math.log(Main.getMaybeList(now, board, !playerIsRed).size()));
         int depth = Math.min(Math.min(myDepth, hisDepth), 10);
         System.out.printf("我方深度:%d对方深度%d,最终深度:%d\n", myDepth, hisDepth, depth);
-        int[] dfs = Main.dfs(now, board, lines.size(), lines.size() + depth, playerIsRed, playerIsRed, new int[30], new int[30], new String[30], 0);
+        ScoreNode father = new ScoreNode();
+        int[] dfs = Main.dfs(now, board, lines.size(), lines.size() + depth, playerIsRed, playerIsRed, new int[30], new int[30], new String[30], 0, father);
         if (dfs[1] == -1 || (playerIsRed && dfs[0] == -50000) || (!playerIsRed && dfs[0] == 50000)) {
             System.out.println("nobestmove");
             return "nobestmove";

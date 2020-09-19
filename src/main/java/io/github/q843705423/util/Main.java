@@ -1,9 +1,12 @@
 package io.github.q843705423.util;
 
+import io.github.q843705423.entity.ScoreNode;
 import io.github.q843705423.entity.piece.common.Board;
 import io.github.q843705423.entity.piece.common.Piece;
 import io.github.q843705423.entity.piece.common.ReplaceTableV2;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -52,6 +55,8 @@ public class Main {
             450, 450, 900, 900, 200, 200, 150, 150,
     };
 
+    //    public static Map<String, String> map = new HashMap<>();
+    public static List<String[]> list = new ArrayList<>();
 
     /**
      * dfs返回值到底是什么
@@ -76,7 +81,7 @@ public class Main {
      * @param isRedTurn 是红方
      * @return [0->得分] [1->谁] [2->走到哪里]
      */
-    public static int[] dfs(int[] now, int[] board, int depth, int maxDepth, boolean isRedTurn, boolean playerIsRed, int[] whos, int[] wheres, String[] chinese, int whoLength) {
+    public static int[] dfs(int[] now, int[] board, int depth, int maxDepth, boolean isRedTurn, boolean playerIsRed, int[] whos, int[] wheres, String[] chinese, int whoLength, ScoreNode father) {
 
         if (now[5] == -1) {
             return new int[]{50000, whos[0], wheres[0], depth};
@@ -86,7 +91,7 @@ public class Main {
         }
 
         if (depth == maxDepth) {
-            int score = calculate(now,  board, depth);
+            int score = calculate(now, board, depth);
             int[] ints = {score, whos[0], wheres[0], depth};
             ReplaceTableV2.putMap(now, ints[1], ints[2], ints[0], depth, isRedTurn, isRedTurn);
             return ints;
@@ -95,11 +100,12 @@ public class Main {
             int[] maxOrMin = new int[]{(isRedTurn ? -500_0000 : 500_0000), -1, -1, depth};
             List<int[]> maybeList = getMaybeList(now, board, isRedTurn);
             for (int j = 0; j < maybeList.size(); j++) {
-                int[] whoTowhere = maybeList.get(j);
-                int beginNowPos = whoTowhere[0];//某个子
-                int endBoardPos = whoTowhere[1];//移动到哪里去
+                int[] whoToWhere = maybeList.get(j);
+                int beginNowPos = whoToWhere[0];//某个子
+                int endBoardPos = whoToWhere[1];//移动到哪里去
 
-                chinese[whoLength] = zhao(beginNowPos, endBoardPos);
+                String zhao = zhao(beginNowPos, endBoardPos);
+                chinese[whoLength] = zhao;
 
                 int endNowPos = 0;
                 try {
@@ -108,7 +114,6 @@ public class Main {
                     e.printStackTrace();
                 }
 
-//                int temp_x = now[endNowPos];
                 int temp_x = -1;
                 int temp_y;
                 int temp_z;
@@ -133,11 +138,13 @@ public class Main {
                 whoLength++;
 
                 int[] map = ReplaceTableV2.getMap(now, depth, isRedTurn);//先去找历史表
+                ScoreNode son = new ScoreNode(zhao);
+                father.add(son);
 
                 int[] dfs;
                 int z = 0;
                 if (map == null) {
-                    dfs = dfs(now, board, depth + 1, maxDepth, !isRedTurn, playerIsRed, whos, wheres, chinese, whoLength);
+                    dfs = dfs(now, board, depth + 1, maxDepth, !isRedTurn, playerIsRed, whos, wheres, chinese, whoLength, son);
                     z = 1;
 
                 } else {
@@ -148,23 +155,22 @@ public class Main {
 
 
                 }
-//                tip(depth, chinese, dfs, new String[]{"车三平五"}, z);
+                son.setScore(dfs[0]);
 
 
-                if (dfs[1] != -1) {
+                if (isRedTurn) {
+                    if ((maxOrMin[0] < dfs[0]) || (maxOrMin[0] == dfs[0] && maxOrMin[3] > dfs[3])) {
+                        maxOrMin = dfs;
 
-                    if (isRedTurn) {
-                        if ((maxOrMin[0] < dfs[0]) || (maxOrMin[0] == dfs[0] && maxOrMin[3] > dfs[3])) {
-                            maxOrMin = dfs;
+
 //                            maxOrMin = new int[]{dfs[0],whos[0],wheres[0]};
-                        }
-                    } else {
-                        if (maxOrMin[0] > dfs[0] || (maxOrMin[0] == dfs[0] && maxOrMin[3] > dfs[3])) {
-                            maxOrMin = dfs;
-//                            maxOrMin = new int[]{dfs[0],whos[0],wheres[0]};
-                        }
-
                     }
+                } else {
+                    if (maxOrMin[0] > dfs[0] || (maxOrMin[0] == dfs[0] && maxOrMin[3] > dfs[3])) {
+                        maxOrMin = dfs;
+//                            maxOrMin = new int[]{dfs[0],whos[0],wheres[0]};
+                    }
+
                 }
 
                 ReplaceTableV2.putMap(now, dfs[1], dfs[2], dfs[0], depth, isRedTurn, playerIsRed);
@@ -191,6 +197,29 @@ public class Main {
         }
 
 
+    }
+
+    public static FileWriter fileWriter;
+
+    private static void show(String[] chinese, int a, int b) {
+        for (int i = 0; i < chinese.length; i++) {
+            if (chinese[i] == null || chinese[i].equals("")) {
+                break;
+            }
+//            System.out.print(chinese[i] + " ");
+            try {
+                fileWriter.write(chinese[i] + " ");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
+//        System.out.println(" " + a + "->" + b);
+        try {
+            fileWriter.write(" " + "->" + b + "\r\n");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private static void tip(int depth, String[] chinese, int[] dfs, String[] k, int z) {
@@ -244,10 +273,10 @@ public class Main {
     /**
      * 计算双方得分
      *
-     * @param now       当前双方子力
+     * @param now 当前双方子力
      * @return 得分
      */
-    public static int calculate(int[] now,  int[] board, int depth) {
+    public static int calculate(int[] now, int[] board, int depth) {
         int upSum = 0;
         for (int i = 0; i < 16; i++) {
             upSum += (now[i] == -1 ? 0 : 1) * scope[i];
@@ -375,38 +404,8 @@ public class Main {
 
     public static String zhao(int who, int where) {
         Piece piece = index2Bing.get(who);
-        int origin = Board.now[who];
         return piece.read(Board.now, Board.board, who, where);
 
-/*
-        int beginX = origin % Board.W;
-        int beginY = origin / Board.W;
-        int endX = where % Board.W;
-        int endY = where / Board.W;
-        String redPos = "0九八七六五四三二一";
-        String blackPos = "0123456789";
-
-        String changeRed = "0一二三四五六七八九";
-        String changeBlack = "0123456789";
-
-        String one = piece.chinaName();
-        char two = piece.isRed() ? redPos.charAt(beginX + 1) : blackPos.charAt(beginX + 1);
-        String three = "";
-        if (beginY == endY) {
-            three = "平";
-        } else {
-            three = (piece.isRed() && beginY > endY) || ((!piece.isRed()) && beginY < endY) ? "进" : "退";
-        }
-        char four;
-        if (three.equals("平")) {
-
-            four = piece.isRed() ? redPos.charAt(Math.abs(endX + 1)) : blackPos.charAt(Math.abs(endX + 1));
-        } else {
-
-            four = piece.isRed() ? changeRed.charAt(Math.abs(beginY - endY)) : changeBlack.charAt(Math.abs(beginY - endY));
-        }
-        return one + two + three + four;
-*/
     }
 
     public static void showChinese(int[] board) {

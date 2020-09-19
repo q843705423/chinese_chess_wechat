@@ -1,6 +1,7 @@
 package io.github.q843705423.util;
 
 import io.github.q843705423.entity.Protocol;
+import io.github.q843705423.entity.ScoreNode;
 import org.junit.Test;
 
 import java.util.regex.Matcher;
@@ -13,14 +14,14 @@ public class MainTest {
     @Test
     public void init() {
 
-        String fen = "rnbakabnr/9/1c5c1/p1p1p1p1p/9/9/P1P1P1P1P/1C5C1/9/RNBAKABNR w - - 0 1";
+        String fen = "r1bakabnr/9/3c3c1/p3p1p1p/2pn5/8P/P1P1P1P2/1CN3NC1/8R/R1BAKAB2 w - - 0 5";
 //        String[] split = fen.split(" ");
         Protocol protocol = new Protocol(fen);
         int[] init = Main.init(protocol.getPiecePlacementData());
         int[] board = Main.initToBoard(init);
 
 
-        int[] dfs = Main.dfs(init, board, 0, 4, protocol.isRed(), protocol.isRed(), new int[30], new int[30],new String[30], 0);
+        int[] dfs = Main.dfs(init, board, 0, 4, protocol.isRed(), protocol.isRed(), new int[30], new int[30],new String[30], 0,new ScoreNode());
         System.out.println("score:"+dfs[0]);
         System.out.println("which:"+dfs[1]);
         System.out.println("where:"+dfs[2]);

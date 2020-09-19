@@ -27,7 +27,7 @@ public abstract class AbstractSoldier extends Piece implements GoReadSoldier {
             int kindY = now[otherKind] / Board.W;
 
             int i = Math.abs(soldierX - kindX) + Math.abs(soldierY - kindY);
-            return (goRiver ? 100 : 10) + (i == 0 ? 1000 : (400 / i));
+            return (goRiver ? 100 : 50) + (i == 0 ? 1000 : (400 / i));
         }
         return 0;
     }

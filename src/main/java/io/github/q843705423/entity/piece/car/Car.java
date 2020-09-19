@@ -91,6 +91,6 @@ public abstract class Car extends Piece implements GoReadSoldier {
         int boardPos = now[pos];
         int y = boardPos / Board.W;
         int x = boardPos % Board.W;
-        return 6 * moveListCount(now, board, pos, y, x);
+        return 3 * moveListCount(now, board, pos, y, x);
     }
 }

@@ -65,6 +65,9 @@ public class Protocol {
 
     }
 
+    public void changeColor() {
+        activeColor = "b".equals(activeColor) ? "w" : "b";
+    }
 
     public boolean isRed() {
         boolean b = !"b".equals(activeColor);
