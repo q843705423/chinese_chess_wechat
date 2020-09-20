@@ -16,4 +16,5 @@ public class RedMinister extends Minister {
     public boolean isRed() {
         return true;
     }
+
 }

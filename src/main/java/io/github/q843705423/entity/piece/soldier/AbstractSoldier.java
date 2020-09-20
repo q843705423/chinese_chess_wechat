@@ -6,6 +6,7 @@ import io.github.q843705423.entity.piece.common.Piece;
 
 public abstract class AbstractSoldier extends Piece implements GoReadSoldier {
 
+
     /**
      * 当兵过河以后，离皇帝越近，分数越高
      *
@@ -27,9 +28,13 @@ public abstract class AbstractSoldier extends Piece implements GoReadSoldier {
             int kindY = now[otherKind] / Board.W;
 
             int i = Math.abs(soldierX - kindX) + Math.abs(soldierY - kindY);
-            return (goRiver ? 100 : 50) + (i == 0 ? 1000 : (400 / i));
+            return (goRiver ? 50 : 0) + (i == 0 ? 1000 : (300 / i));
         }
         return 0;
     }
 
+    @Override
+    public int getScore() {
+        return 100;
+    }
 }

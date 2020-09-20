@@ -46,4 +46,9 @@ public abstract class Adviser extends Piece implements GoReadHouse {
             }
         }
     }
+
+    @Override
+    public int getScore() {
+        return 100;
+    }
 }

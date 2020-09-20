@@ -62,6 +62,21 @@ public class Board {
         now[movePos] = endY * W + endX;
     }
 
+    public static int[] moveZhao(String moveInfo) {
+        char begin_y = moveInfo.charAt(0);
+        char begin_x = moveInfo.charAt(1);
+        char end_y = moveInfo.charAt(2);
+        char end_x = moveInfo.charAt(3);
+        int beginY = W - (begin_x - '0');
+        int beginX = begin_y - 'a';
+        int endY = W - (end_x - '0');
+        int endX = end_y - 'a';
+        int nowPos = board[beginY * 9 + beginX];
+        int boardPos = endY * 9 + endX;
+        return new int[]{nowPos, boardPos};
+
+    }
+
     public static void move(String moveInfo1) {
 
         lines.add(moveInfo1);
@@ -80,10 +95,11 @@ public class Board {
         boolean playerIsRed = protocol.isRed();
         int myDepth = (int) (Math.log(5000_0000) / Math.log(Main.getMaybeList(now, board, playerIsRed).size()));
         int hisDepth = (int) (Math.log(5000_0000) / Math.log(Main.getMaybeList(now, board, !playerIsRed).size()));
-        int depth = Math.min(Math.min(myDepth, hisDepth), 10);
-        System.out.printf("我方深度:%d对方深度%d,最终深度:%d\n", myDepth, hisDepth, depth);
+        int addDepth = Math.min(Math.min(myDepth, hisDepth), 10);
+        int realDepth = lines.size() + addDepth;
+        System.out.printf("我方深度:%d对方深度%d,最终深度:%d\n", myDepth, hisDepth, addDepth);
         ScoreNode father = new ScoreNode();
-        int[] dfs = Main.dfs(now, board, lines.size(), lines.size() + depth, playerIsRed, playerIsRed, new int[30], new int[30], new String[30], 0, father);
+        int[] dfs = Main.dfs(now, board, lines.size(), lines.size(), realDepth, playerIsRed, playerIsRed, new int[50], new int[50], new String[50], 0, father);
         if (dfs[1] == -1 || (playerIsRed && dfs[0] == -50000) || (!playerIsRed && dfs[0] == 50000)) {
             System.out.println("nobestmove");
             return "nobestmove";

@@ -84,4 +84,13 @@ public abstract class Kind extends Piece implements GoReadSoldier {
 
     }
 
+    @Override
+    public int getScore() {
+        return 500000;
+    }
+
+    @Override
+    public boolean exchangeExpansion() {
+        return true;
+    }
 }

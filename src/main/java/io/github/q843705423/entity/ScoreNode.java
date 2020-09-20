@@ -10,25 +10,27 @@ import java.util.List;
 @NoArgsConstructor
 public class ScoreNode {
     private String name;
-    private Integer score;
-    private List<ScoreNode> nodeList;
+    private int score;
+    private List<ScoreNode> childList;
+    private ScoreNode father;
 
     public ScoreNode(String name) {
         this.name = name;
 
     }
 
-    public void add(ScoreNode node) {
-        if (nodeList == null) {
-            nodeList = new ArrayList<>();
+    public void addChild(ScoreNode node) {
+        if (childList == null) {
+            childList = new ArrayList<>();
         }
-        this.nodeList.add(node);
+        this.childList.add(node);
+        node.setFather(this);
 
     }
 
     @Override
     public String toString() {
-        return "";
+        return null;
     }
 }
 

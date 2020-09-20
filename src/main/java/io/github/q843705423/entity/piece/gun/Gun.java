@@ -68,8 +68,6 @@ public abstract class Gun extends Piece implements GoReadSoldier {
     }
 
     /**
-     * 过河炮要扣分
-     *
      * @param now
      * @param board
      * @param depth
@@ -77,6 +75,23 @@ public abstract class Gun extends Piece implements GoReadSoldier {
      * @return
      */
     public int extraScore(int[] now, int[] board, int depth, int pos) {
-        return goRiver(now, pos) ? -30 : 30;
+        int boardPos = now[pos];
+        int x = boardPos % Board.W;
+        if (x == 4) {
+            return 150;
+
+        }
+        return 0;
+//        return goRiver(now, pos) ? -30 : 30;
+    }
+
+    @Override
+    public int getScore() {
+        return 500;
+    }
+
+    @Override
+    public boolean exchangeExpansion() {
+        return true;
     }
 }

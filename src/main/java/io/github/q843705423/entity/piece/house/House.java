@@ -100,6 +100,17 @@ public abstract class House extends Piece implements GoReadHouse {
         int y = pos / Board.W;
         int x = pos % Board.W;
         int count = moveListCount(now, board, pos, y, x);
-        return 5 * count;
+        return -40 * (8 - count);
+    }
+
+
+    @Override
+    public int getScore() {
+        return 400;
+    }
+
+    @Override
+    public boolean exchangeExpansion() {
+        return true;
     }
 }

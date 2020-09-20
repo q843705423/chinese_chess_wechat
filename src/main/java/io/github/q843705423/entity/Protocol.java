@@ -15,6 +15,7 @@ public class Protocol {
 
     private String enPassantTargetSquare;
     private List<String> moveList = new ArrayList<>();
+    private String banEn;
 
     public List<String> getMoveList() {
         return moveList;
@@ -62,7 +63,20 @@ public class Protocol {
         } catch (NumberFormatException e) {
             allTurn = 0;
         }
+        setBan();
 
+    }
+
+    public void setBan() {
+        List<String> moveList = this.getMoveList();
+        if (moveList.size() >= 8) {
+            String s = moveList.get(moveList.size() - 4);
+            String s1 = moveList.get(moveList.size() - 8);
+            if (s.equals(s1)) {
+                this.banEn = s;
+            }
+
+        }
     }
 
     public void changeColor() {

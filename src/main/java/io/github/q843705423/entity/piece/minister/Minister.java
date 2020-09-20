@@ -43,4 +43,9 @@ public abstract class Minister extends Piece implements GoReadHouse {
         }
 
     }
+
+    @Override
+    public int getScore() {
+        return 200;
+    }
 }

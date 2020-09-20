@@ -1,7 +1,5 @@
 package io.github.q843705423.entity.piece.car;
 
-import java.util.List;
-
 public class BlackCar extends Car {
     @Override
     public String englishName() {

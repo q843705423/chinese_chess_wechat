@@ -97,7 +97,7 @@ public class BoardObject {
         int depth = Math.min(Math.min(myDepth, hisDepth), 10);
         System.out.printf("我方深度:%d对方深度%d,最终深度:%d\n", myDepth, hisDepth, depth);
         ScoreNode father = new ScoreNode();
-        int[] dfs = Main.dfs(now, board, lines.size(), lines.size() + depth, playerIsRed, playerIsRed, new int[30], new int[30], new String[30], 0, father);
+        int[] dfs = Main.dfs(now, board, lines.size(), lines.size() + depth, lines.size() + depth, playerIsRed, playerIsRed, new int[30], new int[30], new String[30], 0, father);
         if (dfs[1] == -1 || (playerIsRed && dfs[0] == -50000) || (!playerIsRed && dfs[0] == 50000)) {
             System.out.println("nobestmove");
             return "nobestmove";

@@ -5,7 +5,7 @@ import io.github.q843705423.util.CanMove;
 
 import java.util.List;
 
-public abstract class Piece implements CanMove, Nameable, ColorAble, GoRead {
+public abstract class Piece implements CanMove, Nameable, ColorAble, GoRead, ScoreAble, ExchangeExpansion {
 
 
     /**
@@ -80,5 +80,10 @@ public abstract class Piece implements CanMove, Nameable, ColorAble, GoRead {
 
     public int extraScore(int[] now, int[] board, int depth, int pos) {
         return 0;
+    }
+
+    @Override
+    public boolean exchangeExpansion() {
+        return false;
     }
 }

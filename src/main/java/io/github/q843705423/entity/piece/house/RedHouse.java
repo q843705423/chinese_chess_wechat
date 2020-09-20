@@ -1,7 +1,5 @@
 package io.github.q843705423.entity.piece.house;
 
-import io.github.q843705423.entity.piece.house.House;
-
 public class RedHouse extends House {
     @Override
     public String englishName() {

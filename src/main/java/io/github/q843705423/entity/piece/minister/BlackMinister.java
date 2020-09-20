@@ -16,4 +16,5 @@ public class BlackMinister extends Minister {
     public boolean isRed() {
         return false;
     }
+
 }

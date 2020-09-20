@@ -50,4 +50,15 @@ public class BoardTest {
         Board.init(new Protocol("3akab2/3rn4/bc6r/2P4NR/8c/P8/4P3P/1C2B1N2/4A4/R1B1KA3 b - - 0"));
         String go = Board.go();
     }
+
+    /**
+     * 残局
+     *
+     * @throws IOException
+     */
+    @Test
+    public void boardInit5() throws IOException {
+        Board.init(new Protocol("3k5/9/9/N8/9/9/9/9/9/4K4 w - - 0 1"));
+        String go = Board.go();
+    }
 }

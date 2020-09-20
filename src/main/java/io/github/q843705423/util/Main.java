@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 
 import static io.github.q843705423.entity.piece.common.PieceFactory.index2Bing;
 
-//import io.github.q843705423.entity.piece.common.ReplaceTableV2;
 
 public class Main {
 
@@ -48,12 +47,14 @@ public class Main {
         start.put("P", 16);
     }
 
+/*
     static int[] scope = new int[]{
             10, 10, 10, 10, 10, 10000, 400, 400,
             450, 450, 900, 900, 200, 200, 150, 150,
             10, 10, 10, 10, 10, 10000, 400, 400,
             450, 450, 900, 900, 200, 200, 150, 150,
     };
+*/
 
     //    public static Map<String, String> map = new HashMap<>();
     public static List<String[]> list = new ArrayList<>();
@@ -81,24 +82,30 @@ public class Main {
      * @param isRedTurn 是红方
      * @return [0->得分] [1->谁] [2->走到哪里]
      */
-    public static int[] dfs(int[] now, int[] board, int depth, int maxDepth, boolean isRedTurn, boolean playerIsRed, int[] whos, int[] wheres, String[] chinese, int whoLength, ScoreNode father) {
+    public static int[] dfs(int[] now, int[] board, int baseDepth, int depth, int maxDepth, boolean isRedTurn, boolean playerIsRed, int[] whos, int[] wheres, String[] chinese, int whoLength, ScoreNode root) {
 
         if (now[5] == -1) {
-            return new int[]{50000, whos[0], wheres[0], depth};
+            return new int[]{50000 - depth, whos[0], wheres[0], depth};
         }
         if (now[21] == -1) {
-            return new int[]{-50000, whos[0], wheres[0], depth};
+            return new int[]{-50000 + depth, whos[0], wheres[0], depth};
         }
 
-        if (depth == maxDepth) {
+        if (depth >= maxDepth) {
             int score = calculate(now, board, depth);
             int[] ints = {score, whos[0], wheres[0], depth};
             ReplaceTableV2.putMap(now, ints[1], ints[2], ints[0], depth, isRedTurn, isRedTurn);
             return ints;
         } else {
-//            int[] max = new int[]{-10000, -1, -1};
             int[] maxOrMin = new int[]{(isRedTurn ? -500_0000 : 500_0000), -1, -1, depth};
             List<int[]> maybeList = getMaybeList(now, board, isRedTurn);
+
+            //如果是第一着,且有着法被禁止
+            if (baseDepth == depth && Board.protocol.getBanEn() != null) {
+                int[] banInt = Board.moveZhao(Board.protocol.getBanEn());
+                maybeList.removeIf(ints -> ints[0] == banInt[0] && ints[1] == banInt[1]);
+            }
+
             for (int j = 0; j < maybeList.size(); j++) {
                 int[] whoToWhere = maybeList.get(j);
                 int beginNowPos = whoToWhere[0];//某个子
@@ -106,6 +113,9 @@ public class Main {
 
                 String zhao = zhao(beginNowPos, endBoardPos);
                 chinese[whoLength] = zhao;
+
+                //辅助用于判断捉子拓展
+//                int originZhuoCount = getZhuoZiCount(now, board, isRedTurn, beginNowPos);
 
                 int endNowPos = 0;
                 try {
@@ -138,24 +148,39 @@ public class Main {
                 whoLength++;
 
                 int[] map = ReplaceTableV2.getMap(now, depth, isRedTurn);//先去找历史表
-                ScoreNode son = new ScoreNode(zhao);
-                father.add(son);
+                ScoreNode maybeNode = new ScoreNode(zhao);
+                root.addChild(maybeNode);
 
                 int[] dfs;
-                int z = 0;
+
                 if (map == null) {
-                    dfs = dfs(now, board, depth + 1, maxDepth, !isRedTurn, playerIsRed, whos, wheres, chinese, whoLength, son);
-                    z = 1;
+                    int newMaxDepth = maxDepth;
+                    if (maxDepth + 1 - baseDepth <= 10) {
+
+                        //进行兑子扩展
+                        Piece piece = index2Bing.get(endNowPos);
+                        if (endNowPos != -1 && piece.exchangeExpansion() && depth == maxDepth - 1) {
+//                            System.out.println((piece.isRed() ? "红" : "黑") + piece.chinaName() + "被吃,进行兑子拓展");
+                            newMaxDepth = maxDepth + 1;
+                        } /*else {
+                            //进行捉子拓展
+                            int count = getZhuoZiCount(now, board, isRedTurn, beginNowPos);
+                            if (count > originZhuoCount &&  depth == maxDepth - 1) {
+                                System.out.println("多子被捉,进行捉子拓展");
+                                newMaxDepth = maxDepth + 1;
+                            }
+
+                        }*/
+                    }
+
+                    dfs = dfs(now, board, baseDepth, depth + 1, newMaxDepth, !isRedTurn, playerIsRed, whos, wheres, chinese, whoLength, maybeNode);
 
                 } else {
-//                    dfs = map;
-//                    dfs[1] = whos[0];
-//                    dfs[2] = wheres[0];
                     dfs = new int[]{map[0], whos[0], wheres[0], map[3] + 1};
 
 
                 }
-                son.setScore(dfs[0]);
+                maybeNode.setScore(dfs[0]);
 
 
                 if (isRedTurn) {
@@ -172,6 +197,7 @@ public class Main {
                     }
 
                 }
+//                root.setScore(maxOrMin[0]);
 
                 ReplaceTableV2.putMap(now, dfs[1], dfs[2], dfs[0], depth, isRedTurn, playerIsRed);
 
@@ -189,6 +215,42 @@ public class Main {
                     board[temp_y] = temp_h;
                 }
 
+                //判断是否可以进行a-b裁剪
+                if (root.getFather() != null && root.getFather() != null) {
+                    List<ScoreNode> brotherList = root.getFather().getChildList();
+                    if (brotherList != null && brotherList.size() > 1) {
+                        if (!isRedTurn) {
+                            int maxScore = -500_0000;
+                            for (int i = 0; i < brotherList.size(); i++) {
+                                if (brotherList.get(i) != root) {
+                                    maxScore = Math.max(maxScore, brotherList.get(i).getScore());
+                                }
+
+                            }
+                            if (maxOrMin[0] < maxScore) {
+//                                System.out.println("发生a-b裁剪");
+                                return maxOrMin;
+                            }
+
+                        } else {
+                            int minScore = 500_0000;
+                            for (int i = 0; i < brotherList.size(); i++) {
+                                if (brotherList.get(i) != root) {
+                                    minScore = Math.min(minScore, brotherList.get(i).getScore());
+                                }
+                            }
+                            if (maxOrMin[0] > minScore) {
+//                                System.out.println("发生a-b裁剪");
+                                return maxOrMin;
+                            }
+
+
+                        }
+
+                    }
+
+                }
+
 
             }
             return maxOrMin;
@@ -197,6 +259,21 @@ public class Main {
         }
 
 
+    }
+
+    private static int getZhuoZiCount(int[] now, int[] board, boolean isRedTurn, int beginNowPos) {
+        CanMove canMove = index2Bing.get(beginNowPos);
+        ArrayList<Integer> list = new ArrayList<>();
+        canMove.moveList(now, board, isRedTurn, beginNowPos, now[beginNowPos] / Board.W, now[beginNowPos] % Board.W, list);
+        int count = 0;
+        for (int i = 0; i < list.size(); i++) {
+            if (board[list.get(i)] != -1 && index2Bing.get(board[list.get(i)]).exchangeExpansion()) {
+                count++;
+                break;
+            }
+
+        }
+        return count;
     }
 
     public static FileWriter fileWriter;
@@ -264,6 +341,14 @@ public class Main {
                 }
             }
         }
+        moveOp.sort((o1, o2) -> {
+            int score1 = index2Bing.get(o1[0]).getScore();
+            int score2 = index2Bing.get(o2[0]).getScore();
+            int board1 = board[o1[1]] == -1 ? 0 : index2Bing.get(board[o1[1]]).getScore();
+            int board2 = board[o2[1]] == -1 ? 0 : index2Bing.get(board[o2[1]]).getScore();
+            return Integer.compare(board2 << 4 + score2, board1 << 4 + score1);
+        });
+
         return moveOp;
 
     }
@@ -279,20 +364,22 @@ public class Main {
     public static int calculate(int[] now, int[] board, int depth) {
         int upSum = 0;
         for (int i = 0; i < 16; i++) {
-            upSum += (now[i] == -1 ? 0 : 1) * scope[i];
-            if (now[i] != -1) {
-                upSum += index2Bing.get(i).extraScore(now, board, depth, i);
-            }
-
+            upSum = getSum(now, board, depth, upSum, i);
         }
         int downSum = 0;
         for (int i = 16; i < 32; i++) {
-            downSum += (now[i] == -1 ? 0 : 1) * scope[i];
-            if (now[i] != -1) {
-                downSum += index2Bing.get(i).extraScore(now, board, depth, i);
-            }
+            downSum = getSum(now, board, depth, downSum, i);
         }
         return downSum - upSum;
+    }
+
+    private static int getSum(int[] now, int[] board, int depth, int downSum, int i) {
+        if (now[i] != -1) {
+            Piece piece = index2Bing.get(i);
+            downSum += (now[i] == -1 ? 0 : 1) * piece.getScore();
+            downSum += piece.extraScore(now, board, depth, i);
+        }
+        return downSum;
     }
 
 
