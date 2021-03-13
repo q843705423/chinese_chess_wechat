@@ -7,6 +7,19 @@ import io.github.q843705423.entity.piece.common.Piece;
 import java.util.List;
 
 public abstract class Minister extends Piece implements GoReadHouse {
+    public static int[][] score = new int[][]{
+            {0, 0, 20, 0, 0, 0, 20, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {-20, 0, 0, 0, 50, 0, 0, 0, -20},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 30, 0, 0, 0, 30, 0, 0},
+            {0, 0, 30, 0, 0, 0, 30, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {-20, 0, 0, 0, 50, 0, 0, 0, -20},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 20, 0, 0, 0, 20, 0, 0},
+
+    };
 
     public static int[][] go = {
             {2, 2},
@@ -47,5 +60,14 @@ public abstract class Minister extends Piece implements GoReadHouse {
     @Override
     public int getScore() {
         return 200;
+    }
+
+    @Override
+    public int extraScore(int[] now, int[] board, int depth, int pos) {
+
+        int soldierBoardPos = now[pos];
+        int y = soldierBoardPos / Board.W;
+        int x = soldierBoardPos % Board.W;
+        return score[y][x];
     }
 }

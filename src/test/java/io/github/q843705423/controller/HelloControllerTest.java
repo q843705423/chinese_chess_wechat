@@ -3,19 +3,22 @@ package io.github.q843705423.controller;
 import io.github.q843705423.autumn.DefaultContextFactory;
 import io.github.q843705423.autumn.entity.Configuration;
 import io.github.q843705423.entity.Homework;
+import io.github.q843705423.entity.R;
 import io.github.q843705423.entity.Student;
+import io.github.q843705423.entity.Teacher;
 import io.github.util.MyDefaultContextFactory;
 import org.junit.Test;
 import org.springframework.mock.web.MockMultipartFile;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.List;
 
 public class HelloControllerTest {
 
     @Test
     public void world() {
-        DefaultContextFactory defaultContextFactory = new DefaultContextFactory(new Configuration("http://127.0.0.1:8080"));
+        DefaultContextFactory defaultContextFactory = new DefaultContextFactory(new Configuration("http://127.0.0.1:8000"));
         HelloController controller = defaultContextFactory.getBean(HelloController.class);
         String world = controller.world();
         System.out.println(world);
@@ -35,9 +38,9 @@ public class HelloControllerTest {
         MyDefaultContextFactory myDefaultContextFactory = new MyDefaultContextFactory();
         HelloController helloController = myDefaultContextFactory.getBean(HelloController.class);
         Student student = new Student();
-        student.setId("1");
-        student.setName("lksajdlkajdlk");
-        String world = helloController.cqqnb(student);
+        student.setId("张三");
+        student.setName("李四");
+        String world = helloController.cqqnb(student, null, "1234");
         System.out.println(world);
     }
 
@@ -71,9 +74,33 @@ public class HelloControllerTest {
         Student student = new Student();
         student.setId("1");
         student.setName("cqq");
-        String cqqnb = bean.cqqnb(student);
+        Teacher teacher = new Teacher();
+        teacher.setCode("ts0001");
+        teacher.setName("张hp");
+        String cqqnb = bean.cqqnb(new Student(), teacher, null);
         System.out.println(cqqnb);
 
     }
 
+    @Test
+    public void test12() {
+        MyDefaultContextFactory myDefaultContextFactory = new MyDefaultContextFactory();
+        R<List<String>> listR = myDefaultContextFactory.getBean(HelloController.class).testRList(new Student(), null, "1234");
+        System.out.println(listR);
+        List<String> data = listR.getData();
+        System.out.println(data);
+        int size = data.size();
+        List<String> list = data.subList(0, 1);
+        System.out.println(list);
+
+
+    }
+
+    @Test
+    public void test13() {
+        MyDefaultContextFactory myDefaultContextFactory = new MyDefaultContextFactory();
+        List<String> list1 = myDefaultContextFactory.getBean(HelloController.class).testOnlyList(new Student(), null, "1234");
+        System.out.println(list1.size());
+        System.out.println(list1.get(0));
+    }
 }

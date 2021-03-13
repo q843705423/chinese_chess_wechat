@@ -18,4 +18,14 @@ public class GunTest {
         List<int[]> maybeList = Main.getMaybeList(Board.now, Board.board, protocol.isRed());
         Main.zhao(maybeList).forEach(System.out::println);
     }
+
+    @Test
+    public void test1(){
+        Protocol protocol = new Protocol("rnbakabnr/7c1/4c4/p1p1p1p1p/9/6P2/P1P1P3P/4C1NC1/8R/RNBAKAB2 b - - 0 3");
+        Board.init(protocol);
+        int i = new RedGun().extraScore(Board.now, Board.board, 0, 24);
+        System.out.println(i);
+
+
+    }
 }

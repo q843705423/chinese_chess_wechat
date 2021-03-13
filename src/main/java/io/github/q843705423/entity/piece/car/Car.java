@@ -9,19 +9,6 @@ import java.util.List;
 
 public abstract class Car extends Piece implements GoReadSoldier {
 
-    static int positionScore[][] = new int[][]{
-            {70, 60, 60, 100, 100, 100, 70, 70, 70,},
-            {60, 60, 60, 110, 100, 110, 60, 60, 60,},
-            {30, 30, 30, 40, 30, 40, 30, 40, 30,},
-            {70, 80, 80, 100, 80, 100, 60, 80, 70,},
-            {70, 80, 80, 100, 80, 100, 60, 80, 70,},
-
-            {70, 80, 80, 110, 80, 110, 60, 80, 70,},
-            {30, 40, 40, 60, 40, 60, 60, 60, 50,},
-            {20, 30, 30, 50, 30, 50, 30, 30, 20,},
-            {20, 30, 30, 50, 30, 50, 30, 30, 20,},
-            {0, 40, 10, 40, 10, 40, 10, 40, 0,},
-    };
 
     @Override
     public void moveList(int[] now, int[] board, boolean isRedTurn, int who, int y, int x, List<Integer> list) {
@@ -100,13 +87,6 @@ public abstract class Car extends Piece implements GoReadSoldier {
 
     }
 
-    @Override
-    public int extraScore(int[] now, int[] board, int depth, int pos) {
-        int boardPos = now[pos];
-        int y = isRed() ? boardPos / Board.W : Board.H - 1 - (boardPos / Board.W);
-        int x = boardPos % Board.W;
-        return positionScore[y][x];
-    }
 
     @Override
     public int getScore() {

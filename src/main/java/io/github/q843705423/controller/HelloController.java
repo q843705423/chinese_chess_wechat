@@ -1,14 +1,16 @@
 package io.github.q843705423.controller;
 
+import com.alibaba.fastjson.JSON;
 import io.github.q843705423.entity.Homework;
+import io.github.q843705423.entity.R;
 import io.github.q843705423.entity.Student;
+import io.github.q843705423.entity.Teacher;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @AllArgsConstructor
@@ -16,6 +18,8 @@ import java.io.*;
 public class HelloController {
 
     @PostMapping("world")
+    @GetMapping("world2")
+    @RequestMapping(value = "hello", method = {RequestMethod.DELETE, RequestMethod.GET})
     public String world() {
         return "hello world";
     }
@@ -38,9 +42,23 @@ public class HelloController {
 
     }
 
-    @PostMapping("cqqnb")
-    public String cqqnb(@RequestBody Student student) {
-        return student.getId() + ":" + student.getName();
+    //    @PostMapping("cqqnb")
+    @GetMapping("cqqnb")
+    public String cqqnb(@RequestBody Student student, Teacher teacher, String code) {
+        return "post:" + JSON.toJSONString(student) + " 和 " + JSON.toJSONString(teacher) + " ,code=" + code;
     }
 
+    @GetMapping("testRList")
+    public R<List<String>> testRList(@RequestBody Student student, Teacher teacher, String code) {
+        ArrayList<String> list = new ArrayList<>();
+        list.add("post:" + JSON.toJSONString(student) + " 和 " + JSON.toJSONString(teacher) + " ,code=" + code);
+        return R.ok(list);
+    }
+
+    @PostMapping("testOnlyList")
+    public List<String> testOnlyList(@RequestBody Student student, Teacher teacher, String code) {
+        ArrayList<String> list = new ArrayList<>();
+        list.add("post:" + JSON.toJSONString(student) + " 和 " + JSON.toJSONString(teacher) + " ,code=" + code);
+        return list;
+    }
 }

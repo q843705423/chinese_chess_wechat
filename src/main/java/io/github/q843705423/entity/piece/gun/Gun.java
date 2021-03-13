@@ -78,11 +78,26 @@ public abstract class Gun extends Piece implements GoReadSoldier {
         int boardPos = now[pos];
         int x = boardPos % Board.W;
         if (x == 4) {
-            return 150;
+            //如果是空头炮， 那么有400分奖励
+            int otherKindPos = isRed() ? 5 : 21;
+            int otherBoardPos = now[otherKindPos];
+            if (otherBoardPos % Board.W == 4) {
+                for (int i = boardPos + Board.W; i < otherBoardPos; i += Board.W) {
+                    if (board[i] != -1) {
+                        return 0;
+                    }
 
+                }
+                for (int i = otherBoardPos + Board.W; i < boardPos; i += Board.W) {
+                    if (board[i] != -1) {
+                        return 0;
+                    }
+
+                }
+                return 400;
+            }
         }
         return 0;
-//        return goRiver(now, pos) ? -30 : 30;
     }
 
     @Override

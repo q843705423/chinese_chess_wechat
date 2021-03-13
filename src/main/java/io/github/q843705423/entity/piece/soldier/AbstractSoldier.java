@@ -28,13 +28,13 @@ public abstract class AbstractSoldier extends Piece implements GoReadSoldier {
             int kindY = now[otherKind] / Board.W;
 
             int i = Math.abs(soldierX - kindX) + Math.abs(soldierY - kindY);
-            return (goRiver ? 50 : 0) + (i == 0 ? 1000 : (300 / i));
+            return (goRiver ? 50 : 0) + (i == 0 ? 1000 : (200 / i));
         }
         return 0;
     }
 
     @Override
     public int getScore() {
-        return 100;
+        return 50;
     }
 }

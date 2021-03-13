@@ -76,6 +76,7 @@ public abstract class House extends Piece implements GoReadHouse {
 
     }
 
+/*
     public int moveListCount(int[] now, int[] board, int who, int y, int x) {
         int count = 0;
         int pos = now[who];
@@ -94,13 +95,24 @@ public abstract class House extends Piece implements GoReadHouse {
         }
         return count;
     }
+*/
 
     @Override
     public int extraScore(int[] now, int[] board, int depth, int pos) {
-        int y = pos / Board.W;
-        int x = pos % Board.W;
-        int count = moveListCount(now, board, pos, y, x);
-        return -40 * (8 - count);
+        int boardPos = now[pos];
+        int[] ints = houseLeg[boardPos];
+        int count = 0;
+        for (int i = 0; i < 8; i += 2) {
+            if (ints[i] == -1) {
+                continue;
+            }
+            if (board[ints[i]] != -1) {
+                count++;
+
+            }
+
+        }
+        return -Math.min(150, count * 30);
     }
 
 

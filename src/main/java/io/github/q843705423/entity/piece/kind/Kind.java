@@ -9,6 +9,19 @@ import java.util.List;
 public abstract class Kind extends Piece implements GoReadSoldier {
 
     static int[] k = new int[90];
+    public static int[][] score = new int[][]{
+            {0, 0, 0, -50, 0, -50, 0, 0, 0},
+            {0, 0, 0, -150, -150, -150, 0, 0, 0},
+            {0, 0, 0, 0, -300, -200, -300, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, -300, -200, -300, 0, 0},
+            {0, 0, 0, -150, -150, -150, 0, 0, 0},
+            {0, 0, 0, -50, 0, -50, 0, 0, 0},
+
+    };
 
     static {
         for (int i = 0; i < Board.W * Board.H; i++) {
@@ -92,5 +105,12 @@ public abstract class Kind extends Piece implements GoReadSoldier {
     @Override
     public boolean exchangeExpansion() {
         return true;
+    }
+
+    @Override
+    public int extraScore(int[] now, int[] board, int depth, int pos) {
+        int y = now[pos] / Board.W;
+        int x = now[pos] % Board.W;
+        return score[y][x];
     }
 }

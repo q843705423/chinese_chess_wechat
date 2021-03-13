@@ -26,4 +26,16 @@ public class MinisterTest {
         List<int[]> maybeList = Main.getMaybeList(Board.now, Board.board, protocol.isRed());
         Main.zhao(maybeList).forEach(System.out::println);
     }
+
+
+    @Test
+    public void moveList3() {
+        Protocol protocol = new Protocol("1rbakabnr/9/1cn4c1/p1p1p1p1p/9/9/P1P1P1P1P/4C2C1/R8/1NBAKABNR w - - 0 3");
+
+        Board.init(protocol);
+//        List<int[]> maybeList = Main.getMaybeList(Board.now, Board.board, protocol.isRed());
+        Board.go();
+
+    }
+
 }

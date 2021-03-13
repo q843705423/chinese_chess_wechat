@@ -155,7 +155,7 @@ public class Main {
 
                 if (map == null) {
                     int newMaxDepth = maxDepth;
-                    if (maxDepth + 1 - baseDepth <= 10) {
+                    if (maxDepth + 1 - baseDepth <= 16) {
 
                         //进行兑子扩展
                         Piece piece = index2Bing.get(endNowPos);
